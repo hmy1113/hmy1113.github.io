@@ -1,0 +1,3036 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>톡톡! 공룡·익룡·바다파충류 맞추기 - 200종 확장판</title>
+<style>
+:root {
+  --bg1:#eef8ff; --bg2:#fff7ea; --card:#ffffff; --text:#213243; --muted:#627181;
+  --shadow:0 16px 36px rgba(36,60,90,.14); --radius:26px;
+}
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { margin:0; padding:0; }
+body {
+  min-height:100vh;
+  font-family:'Malgun Gothic','맑은 고딕','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top left, #dff4ff 0%, transparent 36%),
+    radial-gradient(circle at top right, #fff1d9 0%, transparent 34%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+  display:flex; justify-content:center; padding:18px 12px 28px;
+}
+.app { width:min(100%, 460px); }
+.header { text-align:center; margin-bottom:14px; }
+h1 { margin:8px 0 6px; font-size:clamp(28px, 6vw, 34px); color:#207b3b; }
+.sub { color:var(--muted); font-size:15px; line-height:1.55; font-weight:700; margin:0 auto 8px; }
+.topbar { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:10px 0 16px; }
+.badge {
+  background:rgba(255,255,255,.85); border:1px solid rgba(255,255,255,.9); box-shadow:var(--shadow);
+  padding:10px 14px; border-radius:999px; font-weight:800; color:#32506d; font-size:14px;
+}
+.card-container { width:100%; aspect-ratio: 3 / 4.9; perspective:1200px; margin:0 auto; }
+.card {
+  width:100%; height:100%; position:relative; transform-style:preserve-3d;
+  transition:transform .7s cubic-bezier(.2,.7,.2,1); cursor:pointer;
+}
+.card-container.flipped .card { transform:rotateY(180deg); }
+.face {
+  position:absolute; inset:0; backface-visibility:hidden; border-radius:var(--radius); overflow:hidden;
+  box-shadow:var(--shadow); background:var(--card);
+}
+.front {
+  border:6px solid #ffb184;
+  background:
+    radial-gradient(circle at top right, #fff0dd 0%, transparent 28%),
+    linear-gradient(180deg, #fffaf5, #ffffff 70%);
+  padding:22px 18px 18px;
+  display:flex; flex-direction:column;
+}
+.back {
+  border:6px solid #76d0b0;
+  background:
+    radial-gradient(circle at top left, #dffff2 0%, transparent 30%),
+    linear-gradient(180deg, #f7fffb, #ffffff 70%);
+  transform:rotateY(180deg);
+  padding:18px 16px 16px;
+  display:flex; flex-direction:column; align-items:center;
+}
+.prompt {
+  display:inline-flex; align-self:center; background:#fff; border-radius:999px; padding:8px 14px;
+  font-size:13px; font-weight:900; color:#ff7a35; border:2px solid #ffd1ba; margin-bottom:12px;
+}
+.qtitle { font-size:clamp(24px,5.6vw,30px); font-weight:900; line-height:1.25; margin:6px 0 12px; text-align:center; color:#ea6d27; }
+.hints { display:grid; gap:10px; margin-top:4px; }
+.hint {
+  background:#fff; border:2px dashed #ffd2ba; border-radius:18px; padding:12px 14px; text-align:left;
+  font-size:18px; line-height:1.5; font-weight:800; color:#334455;
+}
+.tapbox {
+  margin-top:auto; text-align:center; padding:14px 12px; border-radius:18px; background:#fff5ef;
+  color:#a05d2d; font-weight:900; font-size:17px;
+}
+.answer-name { margin:6px 0 4px; font-size:clamp(24px, 5.8vw, 30px); font-weight:900; color:#17825a; text-align:center; }
+.meta { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:12px; }
+.pill {
+  background:#effaf5; color:#2f775d; border:1px solid #d0f1e5; padding:7px 11px; border-radius:999px;
+  font-size:13px; font-weight:800;
+}
+.image-wrap {
+  width:100%; flex:1; display:flex; align-items:center; justify-content:center;
+  border-radius:22px; overflow:hidden; background:linear-gradient(180deg,#f2fffa,#eefcff); border:2px solid #d9f4eb;
+  position:relative; isolation:isolate;
+}
+.image-bg {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  filter:blur(18px) saturate(1.05) brightness(.96);
+  transform:scale(1.1);
+  opacity:.42;
+}
+.image-fade {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0) 40%, rgba(255,255,255,.48) 100%),
+    linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
+  z-index:1;
+}
+.image-wrap img#dinoImage {
+  position:relative;
+  z-index:2;
+  width:100%; height:100%;
+  object-fit:contain;
+  display:block;
+  padding:10px;
+  background:transparent;
+}
+.overlay {
+  position:absolute; left:12px; right:12px; bottom:12px; background:rgba(255,255,255,.88);
+  border-radius:12px; padding:8px 10px; font-size:12px; line-height:1.45; font-weight:800; color:#52677b; text-align:center;
+  z-index:3;
+}
+.source-link {
+  margin-top:10px; text-align:center; font-size:13px; font-weight:800;
+}
+.source-link a {
+  color:#2f7f62; text-decoration:none; border-bottom:1px dashed #2f7f62;
+}
+.backhint { margin-top:10px; text-align:center; color:#4d6a65; font-weight:800; font-size:14px; line-height:1.5; }
+.controls { display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:16px; }
+button {
+  appearance:none; border:none; border-radius:18px; padding:15px 16px; font-size:17px; font-weight:900; cursor:pointer;
+  box-shadow:var(--shadow);
+}
+button:active { transform:translateY(1px) scale(.995); }
+.prev { background:#ffffff; color:#3b556e; }
+.next { background:#35a86b; color:#fff; }
+.bottom-controls { display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:12px; }
+.secondary { background:#fff; color:#5b6b7a; }
+.primary { background:#ffb05e; color:#fff; }
+.footer { margin-top:14px; text-align:center; color:#6d7c8d; font-size:13px; font-weight:700; line-height:1.55; }
+@media (max-width: 380px) {
+  .hint { font-size:16px; }
+  button { font-size:16px; }
+  .image-wrap img#dinoImage { padding:8px; }
+}
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <h1>🦖 톡톡! 공룡·익룡·바다파충류 맞추기</h1>
+      <p class="sub">카드를 터치하면 실제 공룡 사진이 나타나요.<br>총 <strong>200종</strong>의 공룡·익룡·바다파충류 퀴즈가 들어 있습니다.</p>
+    </div>
+
+    <div class="topbar">
+      <div class="badge" id="countBadge">1 / 200</div>
+      <div class="badge">200종 확장판</div>
+    </div>
+
+    <div class="card-container" id="cardContainer">
+      <div class="card" id="card" onclick="flipCard()">
+        <div class="face front">
+          <div class="prompt">나는 누구일까요?</div>
+          <div class="qtitle">힌트를 보고 무엇인지 맞혀 보세요!</div>
+          <div class="hints" id="hintList"></div>
+          <div class="tapbox">카드를 톡! 터치하면 이미지가 나와요</div>
+        </div>
+
+        <div class="face back">
+          <div class="answer-name" id="dinoName">티라노사우루스</div>
+          <div class="meta">
+            <span class="pill" id="dinoDiet">육식</span>
+            <span class="pill" id="dinoPeriod">백악기</span>
+          </div>
+          <div class="image-wrap">
+            <img id="dinoImageBg" class="image-bg" alt="" aria-hidden="true">
+            <div class="image-fade"></div>
+            <img id="dinoImage" alt="고생물 이미지">
+            <div class="overlay" id="overlayText">로딩 중...</div>
+          </div>
+          <div class="source-link" id="sourceLink"></div>
+          <div class="backhint">일부 공룡은 첫 로딩에 몇 초 걸릴 수 있습니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="prev" onclick="prevCard(event)">◀ 이전 공룡</button>
+      <button class="next" onclick="nextCard(event)">다음 공룡 ▶</button>
+    </div>
+
+    <div class="bottom-controls">
+      <button class="secondary" onclick="shuffleDeck(event)">🔀 랜덤 섞기</button>
+      <button class="primary" onclick="goFirst(event)">🏠 처음부터</button>
+    </div>
+  </div>
+
+<script>
+const dinosaurs = [
+  {
+    "name": "티라노사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "아주 큰 머리와 강한 턱을 가졌어요.",
+      "앞다리는 짧고 뒷다리는 튼튼해요.",
+      "무서운 왕처럼 유명한 공룡이에요."
+    ],
+    "wikiSearch": "Tyrannosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Tyrannosaurus"
+  },
+  {
+    "name": "트리케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "얼굴에 뿔이 세 개 있어요.",
+      "목 뒤에 커다란 프릴이 있어요.",
+      "네 발로 걸으며 풀을 먹었어요."
+    ],
+    "wikiSearch": "Triceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Triceratops"
+  },
+  {
+    "name": "브라키오사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "목이 아주 길어요.",
+      "앞다리가 뒷다리보다 조금 길어요.",
+      "높은 나무 잎을 잘 먹었어요."
+    ],
+    "wikiSearch": "Brachiosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Brachiosaurus"
+  },
+  {
+    "name": "스테고사우루스",
+    "group": "stegosaur",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "등에 큰 판이 줄지어 있어요.",
+      "꼬리 끝에 뾰족한 가시가 있어요.",
+      "몸은 크지만 머리는 비교적 작아요."
+    ],
+    "wikiSearch": "Stegosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Stegosaurus"
+  },
+  {
+    "name": "안킬로사우루스",
+    "group": "ankylosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "몸이 딱딱한 갑옷처럼 보여요.",
+      "꼬리 끝이 둥근 곤봉처럼 생겼어요.",
+      "천천히 걸었지만 방어를 잘했어요."
+    ],
+    "wikiSearch": "Ankylosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Ankylosaurus"
+  },
+  {
+    "name": "벨로키랍토르",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "몸집은 생각보다 크지 않았어요.",
+      "뒷발에 날카로운 발톱이 있었어요.",
+      "빠르고 재빠른 사냥꾼으로 유명해요."
+    ],
+    "wikiSearch": "Velociraptor",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Velociraptor"
+  },
+  {
+    "name": "디플로도쿠스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "목도 길고 꼬리도 아주 길어요.",
+      "몸집이 매우 큰 초식 공룡이에요.",
+      "무리를 지어 움직였을지도 몰라요."
+    ],
+    "wikiSearch": "Diplodocus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Diplodocus"
+  },
+  {
+    "name": "아파토사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "거대한 몸집을 가진 목 긴 공룡이에요.",
+      "목으로 높은 곳의 식물을 먹었어요.",
+      "긴 꼬리도 함께 흔들렸어요."
+    ],
+    "wikiSearch": "Apatosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Apatosaurus"
+  },
+  {
+    "name": "알로사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "큰 입과 날카로운 이빨을 가졌어요.",
+      "두 다리로 걷는 무서운 사냥꾼이었어요.",
+      "티라노사우루스보다 더 오래전 공룡이에요."
+    ],
+    "wikiSearch": "Allosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Allosaurus"
+  },
+  {
+    "name": "스피노사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "등에 돛 같은 큰 구조가 있어요.",
+      "주둥이가 길고 악어처럼 보이기도 해요.",
+      "물가에서 물고기를 먹었을 가능성이 커요."
+    ],
+    "wikiSearch": "Spinosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Spinosaurus"
+  },
+  {
+    "name": "파라사우롤로푸스",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "머리 뒤로 길게 뻗은 관이 있어요.",
+      "오리주둥이처럼 넓은 입을 가졌어요.",
+      "소리를 내는 데 도움이 되었을지도 몰라요."
+    ],
+    "wikiSearch": "Parasaurolophus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Parasaurolophus"
+  },
+  {
+    "name": "파키케팔로사우루스",
+    "group": "pachycephalosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "머리 위가 둥글고 두꺼워요.",
+      "머리뼈가 무척 단단했어요.",
+      "이상한 머리 모양으로 유명해요."
+    ],
+    "wikiSearch": "Pachycephalosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Pachycephalosaurus"
+  },
+  {
+    "name": "이구아노돈",
+    "group": "ornithopod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "엄지손가락이 뾰족했어요.",
+      "두 발과 네 발을 모두 썼을 수 있어요.",
+      "초기의 유명한 공룡 발견 중 하나예요."
+    ],
+    "wikiSearch": "Iguanodon",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Iguanodon"
+  },
+  {
+    "name": "카르노타우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "눈 위에 짧은 뿔이 있어요.",
+      "앞다리가 아주아주 작아요.",
+      "빠르게 달렸을 것으로 생각돼요."
+    ],
+    "wikiSearch": "Carnotaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Carnotaurus"
+  },
+  {
+    "name": "갈리미무스",
+    "group": "ornithomimid",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "타조처럼 길고 가는 다리를 가졌어요.",
+      "빠르게 달리는 데 유리했어요.",
+      "부리가 있어 보이는 입을 가졌어요."
+    ],
+    "wikiSearch": "Gallimimus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Gallimimus"
+  },
+  {
+    "name": "콤프소그나투스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "아주 작은 몸집의 공룡이에요.",
+      "두 발로 재빠르게 움직였어요.",
+      "작은 동물을 잡아먹었을 거예요."
+    ],
+    "wikiSearch": "Compsognathus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Compsognathus"
+  },
+  {
+    "name": "딜로포사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "머리 위에 두 개의 볏이 있어요.",
+      "두 발로 걷는 육식 공룡이에요.",
+      "초기 대형 육식 공룡으로 알려져요."
+    ],
+    "wikiSearch": "Dilophosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Dilophosaurus"
+  },
+  {
+    "name": "기가노토사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "아주 거대한 육식 공룡이에요.",
+      "긴 몸과 큰 머리를 가졌어요.",
+      "남아메리카에서 살았어요."
+    ],
+    "wikiSearch": "Giganotosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Giganotosaurus"
+  },
+  {
+    "name": "카마라사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "목이 길고 몸이 큰 초식 공룡이에요.",
+      "코 쪽 머리뼈 모양이 독특해요.",
+      "나무와 식물을 많이 먹었어요."
+    ],
+    "wikiSearch": "Camarasaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Camarasaurus"
+  },
+  {
+    "name": "코엘로피시스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "트라이아스기",
+    "hints": [
+      "아주 오래전 초창기 공룡이에요.",
+      "몸이 날씬하고 빨랐어요.",
+      "무리로 살았을 가능성이 있어요."
+    ],
+    "wikiSearch": "Coelophysis",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Coelophysis"
+  },
+  {
+    "name": "오비랍토르",
+    "group": "oviraptorosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "부리처럼 보이는 입을 가졌어요.",
+      "알과 둥지 근처 화석으로 유명해요.",
+      "이름과 달리 꼭 알도둑은 아닐 수 있어요."
+    ],
+    "wikiSearch": "Oviraptor",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Oviraptor"
+  },
+  {
+    "name": "마이아사우라",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "새끼를 잘 돌본 공룡으로 유명해요.",
+      "오리주둥이처럼 넓은 입이 있어요.",
+      "무리를 이루어 살았을지도 몰라요."
+    ],
+    "wikiSearch": "Maiasaura",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Maiasaura"
+  },
+  {
+    "name": "에드몬토사우루스",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "오리주둥이 공룡 무리에 속해요.",
+      "큰 무리를 지어 이동했을 수 있어요.",
+      "넓은 입으로 식물을 잘 먹었어요."
+    ],
+    "wikiSearch": "Edmontosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Edmontosaurus"
+  },
+  {
+    "name": "샨퉁고사우루스",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "오리주둥이 공룡 중 아주 큰 편이에요.",
+      "몸집이 커서 눈에 잘 띄었어요.",
+      "식물을 많이 먹었어요."
+    ],
+    "wikiSearch": "Shantungosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Shantungosaurus"
+  },
+  {
+    "name": "람베오사우루스",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "머리에 멋진 볏이 있어요.",
+      "오리주둥이 같은 입을 가졌어요.",
+      "볏으로 소리를 냈을지도 몰라요."
+    ],
+    "wikiSearch": "Lambeosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Lambeosaurus"
+  },
+  {
+    "name": "코리토사우루스",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "머리 위 볏이 투구처럼 보여요.",
+      "초식성 오리주둥이 공룡이에요.",
+      "무리 생활을 했을 수 있어요."
+    ],
+    "wikiSearch": "Corythosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Corythosaurus"
+  },
+  {
+    "name": "사우롤로푸스",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "머리 뒤로 짧은 돌기가 나 있어요.",
+      "오리주둥이 공룡 무리예요.",
+      "식물을 뜯어 먹는 데 능숙했어요."
+    ],
+    "wikiSearch": "Saurolophus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Saurolophus"
+  },
+  {
+    "name": "펜타케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "얼굴 장식이 아주 화려해 보여요.",
+      "큰 프릴과 여러 뿔이 특징이에요.",
+      "트리케라톱스의 친척처럼 느껴져요."
+    ],
+    "wikiSearch": "Pentaceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Pentaceratops"
+  },
+  {
+    "name": "스티라코사우루스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "목 프릴에 긴 뿔들이 달려 있어요.",
+      "코 쪽에도 큰 뿔이 있어요.",
+      "화려한 얼굴 장식으로 유명해요."
+    ],
+    "wikiSearch": "Styracosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Styracosaurus"
+  },
+  {
+    "name": "센트로사우루스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "코 위 큰 뿔이 눈에 띄어요.",
+      "목 뒤 프릴이 있어요.",
+      "무리 지어 살았을 가능성이 있어요."
+    ],
+    "wikiSearch": "Centrosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Centrosaurus"
+  },
+  {
+    "name": "프로토케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "작은 몸집의 뿔공룡 친척이에요.",
+      "큰 뿔은 없지만 프릴이 있어요.",
+      "둥지와 알 화석으로도 유명해요."
+    ],
+    "wikiSearch": "Protoceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Protoceratops"
+  },
+  {
+    "name": "토로사우루스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "목 프릴이 아주 크고 넓어요.",
+      "큰 몸집의 뿔공룡이에요.",
+      "얼굴 장식이 멋져 보여요."
+    ],
+    "wikiSearch": "Torosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Torosaurus"
+  },
+  {
+    "name": "코스모케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "프릴과 뿔 장식이 매우 화려해요.",
+      "마치 왕관처럼 보이는 부분이 있어요.",
+      "뿔공룡 중에서도 독특한 얼굴이에요."
+    ],
+    "wikiSearch": "Kosmoceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Kosmoceratops"
+  },
+  {
+    "name": "카스모사우루스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "목 뒤 프릴이 길고 넓어요.",
+      "얼굴에 뿔이 있어요.",
+      "초식성 뿔공룡이에요."
+    ],
+    "wikiSearch": "Chasmosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Chasmosaurus"
+  },
+  {
+    "name": "유오플로케팔루스",
+    "group": "ankylosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "몸을 덮는 갑옷이 단단해 보여요.",
+      "꼬리 곤봉으로 자신을 지켰어요.",
+      "낮은 자세로 느리게 움직였어요."
+    ],
+    "wikiSearch": "Euoplocephalus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Euoplocephalus"
+  },
+  {
+    "name": "사우로펠타",
+    "group": "ankylosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "몸 옆과 등에 가시가 있어요.",
+      "갑옷 같은 피부를 가졌어요.",
+      "낮은 몸으로 식물을 먹었어요."
+    ],
+    "wikiSearch": "Sauropelta",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Sauropelta"
+  },
+  {
+    "name": "노도사우루스",
+    "group": "ankylosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "몸에 단단한 판이 많이 있어요.",
+      "갑옷공룡 무리에 속해요.",
+      "방어에 강한 공룡이었어요."
+    ],
+    "wikiSearch": "Nodosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Nodosaurus"
+  },
+  {
+    "name": "에드몬토니아",
+    "group": "ankylosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "어깨 쪽 큰 가시가 인상적이에요.",
+      "몸 전체에 갑옷이 있어요.",
+      "천천히 움직였지만 쉽게 당하지 않았어요."
+    ],
+    "wikiSearch": "Edmontonia",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Edmontonia"
+  },
+  {
+    "name": "켄트로사우루스",
+    "group": "stegosaur",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "등과 꼬리에 가시와 판이 있어요.",
+      "스테고사우루스의 친척이에요.",
+      "방어용 꼬리가 무서웠어요."
+    ],
+    "wikiSearch": "Kentrosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Kentrosaurus"
+  },
+  {
+    "name": "후아양고사우루스",
+    "group": "stegosaur",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "등에 판이 줄지어 있어요.",
+      "가시가 몸을 지켜 주었어요.",
+      "초기 스테고사우루스류 공룡이에요."
+    ],
+    "wikiSearch": "Huayangosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Huayangosaurus"
+  },
+  {
+    "name": "미라가이아",
+    "group": "stegosaur",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "목이 비교적 길다고 알려졌어요.",
+      "등에 판이 있어요.",
+      "식물을 먹는 스테고사우루스류예요."
+    ],
+    "wikiSearch": "Miragaia",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Miragaia"
+  },
+  {
+    "name": "사우로포세이돈",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "목이 아주 길고 키가 매우 컸어요.",
+      "높은 곳의 나뭇잎을 먹기 좋았어요.",
+      "엄청 큰 몸집으로 유명해요."
+    ],
+    "wikiSearch": "Sauroposeidon",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Sauroposeidon"
+  },
+  {
+    "name": "아르젠티노사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "아주아주 거대한 초식 공룡으로 유명해요.",
+      "몸집이 커서 땅이 울릴 것 같아요.",
+      "긴 목과 긴 꼬리를 가졌어요."
+    ],
+    "wikiSearch": "Argentinosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Argentinosaurus"
+  },
+  {
+    "name": "파타고티탄",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "정말 큰 몸집을 가진 티탄 공룡이에요.",
+      "목이 길고 다리가 굵어요.",
+      "풀과 나뭇잎을 많이 먹었어요."
+    ],
+    "wikiSearch": "Patagotitan",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Patagotitan"
+  },
+  {
+    "name": "살타사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "목 긴 초식 공룡 무리에 속해요.",
+      "몸에 작은 갑옷 같은 구조가 있었어요.",
+      "거대한 몸으로 식물을 먹었어요."
+    ],
+    "wikiSearch": "Saltasaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Saltasaurus"
+  },
+  {
+    "name": "마멘치사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "목이 특히 아주 길어요.",
+      "몸집도 매우 커요.",
+      "높은 식물을 먹는 데 유리했어요."
+    ],
+    "wikiSearch": "Mamenchisaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Mamenchisaurus"
+  },
+  {
+    "name": "슈노사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "목이 긴 초식 공룡이에요.",
+      "꼬리 끝에 특별한 구조가 있었을지도 몰라요.",
+      "큰 몸으로 천천히 움직였어요."
+    ],
+    "wikiSearch": "Shunosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Shunosaurus"
+  },
+  {
+    "name": "오피스토코엘리카우디아",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "거대한 티탄 공룡 무리의 한 종류예요.",
+      "긴 목과 꼬리를 가졌어요.",
+      "나무와 식물을 먹었어요."
+    ],
+    "wikiSearch": "Opisthocoelicaudia",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Opisthocoelicaudia"
+  },
+  {
+    "name": "테라토폰يوس",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "티라노사우루스 친척 무리에 속해요.",
+      "큰 머리와 강한 턱을 가졌어요.",
+      "무서운 사냥꾼이었어요."
+    ],
+    "wikiSearch": "Teratophoneus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Teratophoneus"
+  },
+  {
+    "name": "다스플레토사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "티라노사우루스와 비슷한 친척이에요.",
+      "큰 이빨과 강한 턱을 가졌어요.",
+      "백악기의 육식 공룡이에요."
+    ],
+    "wikiSearch": "Daspletosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Daspletosaurus"
+  },
+  {
+    "name": "타르보사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "아시아에서 살던 큰 티라노사우루스 친척이에요.",
+      "머리가 크고 힘이 셌어요.",
+      "무서운 육식 공룡으로 알려져요."
+    ],
+    "wikiSearch": "Tarbosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Tarbosaurus"
+  },
+  {
+    "name": "알버토사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "티라노사우루스 친척 공룡이에요.",
+      "강한 턱과 날카로운 이빨이 있어요.",
+      "두 다리로 걷는 큰 사냥꾼이에요."
+    ],
+    "wikiSearch": "Albertosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Albertosaurus"
+  },
+  {
+    "name": "마푸사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "남아메리카의 큰 육식 공룡이에요.",
+      "길고 큰 몸을 가졌어요.",
+      "무리 사냥 이야기로도 유명해요."
+    ],
+    "wikiSearch": "Mapusaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Mapusaurus"
+  },
+  {
+    "name": "아크로칸토사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "등 쪽 척추가 높게 솟아 있어요.",
+      "큰 몸집의 육식 공룡이에요.",
+      "두 발로 걸으며 사냥했어요."
+    ],
+    "wikiSearch": "Acrocanthosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Acrocanthosaurus"
+  },
+  {
+    "name": "세라토사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "코 위에 뿔 같은 돌기가 있어요.",
+      "날카로운 이빨을 가졌어요.",
+      "두 발로 걷는 육식 공룡이에요."
+    ],
+    "wikiSearch": "Ceratosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Ceratosaurus"
+  },
+  {
+    "name": "토르보사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "매우 큰 육식 공룡이에요.",
+      "강한 턱과 큰 이빨이 있어요.",
+      "쥐라기의 무서운 사냥꾼이었어요."
+    ],
+    "wikiSearch": "Torvosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Torvosaurus"
+  },
+  {
+    "name": "메갈로사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "아주 일찍 이름이 붙은 공룡 중 하나예요.",
+      "큰 육식 공룡으로 알려졌어요.",
+      "두 발로 걷는 사냥꾼이었어요."
+    ],
+    "wikiSearch": "Megalosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Megalosaurus"
+  },
+  {
+    "name": "유타랍토르",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "랩터 무리 중 몸집이 큰 편이에요.",
+      "뒷발의 큰 발톱이 특징이에요.",
+      "재빠른 육식 공룡이에요."
+    ],
+    "wikiSearch": "Utahraptor",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Utahraptor"
+  },
+  {
+    "name": "데이노니쿠스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "랩터 공룡으로 유명해요.",
+      "뒷발의 날카로운 발톱이 무서워요.",
+      "빠르고 민첩했어요."
+    ],
+    "wikiSearch": "Deinonychus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Deinonychus"
+  },
+  {
+    "name": "드로마이오사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "랩터 무리에 속하는 육식 공룡이에요.",
+      "날카로운 발톱을 가졌어요.",
+      "작지만 사냥 실력이 좋았을 거예요."
+    ],
+    "wikiSearch": "Dromaeosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Dromaeosaurus"
+  },
+  {
+    "name": "트루돈",
+    "group": "theropod",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "몸집은 크지 않아요.",
+      "눈이 커서 밤에도 잘 봤을지 몰라요.",
+      "영리한 공룡으로 자주 소개돼요."
+    ],
+    "wikiSearch": "Troodon",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Troodon"
+  },
+  {
+    "name": "오르니토미무스",
+    "group": "ornithomimid",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "타조처럼 날씬한 몸을 가졌어요.",
+      "빠르게 달리는 데 유리했어요.",
+      "부리 같은 입이 있어요."
+    ],
+    "wikiSearch": "Ornithomimus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Ornithomimus"
+  },
+  {
+    "name": "스트루티오미무스",
+    "group": "ornithomimid",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "타조 닮은 공룡으로 알려져요.",
+      "긴 다리로 빨리 달렸어요.",
+      "가벼운 몸집으로 움직였어요."
+    ],
+    "wikiSearch": "Struthiomimus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Struthiomimus"
+  },
+  {
+    "name": "테리지노사우루스",
+    "group": "therizinosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "앞발 발톱이 아주 길어요.",
+      "이상하고 신기한 모습으로 유명해요.",
+      "주로 식물을 먹었을 가능성이 커요."
+    ],
+    "wikiSearch": "Therizinosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Therizinosaurus"
+  },
+  {
+    "name": "세그노사우루스",
+    "group": "therizinosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "긴 발톱을 가진 친척 무리예요.",
+      "몸은 특이하고 느긋해 보여요.",
+      "식물을 먹었을 것으로 생각돼요."
+    ],
+    "wikiSearch": "Segnosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Segnosaurus"
+  },
+  {
+    "name": "베이피아오사우루스",
+    "group": "therizinosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "깃털 흔적이 알려진 공룡이에요.",
+      "긴 팔과 발톱이 특징이에요.",
+      "독특한 모습의 식물 먹는 공룡이에요."
+    ],
+    "wikiSearch": "Beipiaosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Beipiaosaurus"
+  },
+  {
+    "name": "카우딥테릭스",
+    "group": "oviraptorosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "깃털이 있었던 공룡으로 유명해요.",
+      "몸집이 비교적 작아요.",
+      "새와 닮은 점이 보여요."
+    ],
+    "wikiSearch": "Caudipteryx",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Caudipteryx"
+  },
+  {
+    "name": "안주",
+    "group": "oviraptorosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "부리 같은 입을 가졌어요.",
+      "깃털이 있었을 가능성이 커요.",
+      "알과 둥지와 관련해 자주 떠올려져요."
+    ],
+    "wikiSearch": "Anzu",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Anzu"
+  },
+  {
+    "name": "기간토랍토르",
+    "group": "oviraptorosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "오비랍토르 친척 중 큰 몸집을 가졌어요.",
+      "부리 같은 입이 특징이에요.",
+      "이름처럼 거대한 편이에요."
+    ],
+    "wikiSearch": "Gigantoraptor",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Gigantoraptor"
+  },
+  {
+    "name": "프시타코사우루스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "앵무새 같은 부리가 있어요.",
+      "뿔공룡 친척이지만 몸집이 작아요.",
+      "두 발로도 잘 움직였어요."
+    ],
+    "wikiSearch": "Psittacosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Psittacosaurus"
+  },
+  {
+    "name": "레아엘리나사우라",
+    "group": "ornithopod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "몸집이 작고 민첩한 초식 공룡이에요.",
+      "두 발로 빨리 달렸을 수 있어요.",
+      "추운 지역 적응 이야기로도 유명해요."
+    ],
+    "wikiSearch": "Leaellynasaura",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Leaellynasaura"
+  },
+  {
+    "name": "하이파실로포돈",
+    "group": "ornithopod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "작고 재빠른 초식 공룡이에요.",
+      "두 발로 잘 달렸어요.",
+      "식물을 뜯어 먹었어요."
+    ],
+    "wikiSearch": "Hypsilophodon",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Hypsilophodon"
+  },
+  {
+    "name": "텐온토사우루스",
+    "group": "ornithopod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "중간 크기의 초식 공룡이에요.",
+      "튼튼한 몸과 긴 꼬리를 가졌어요.",
+      "식물을 많이 먹었어요."
+    ],
+    "wikiSearch": "Tenontosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Tenontosaurus"
+  },
+  {
+    "name": "드리오사우루스",
+    "group": "ornithopod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "가볍고 재빠른 초식 공룡이에요.",
+      "두 발로 빠르게 움직였어요.",
+      "작은 몸으로 숲을 누볐을 거예요."
+    ],
+    "wikiSearch": "Dryosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Dryosaurus"
+  },
+  {
+    "name": "캄프토사우루스",
+    "group": "ornithopod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "이구아노돈 친척 같은 초식 공룡이에요.",
+      "식물을 먹는 데 알맞은 입을 가졌어요.",
+      "두 발과 네 발을 모두 썼을 수 있어요."
+    ],
+    "wikiSearch": "Camptosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Camptosaurus"
+  },
+  {
+    "name": "피나코사우루스",
+    "group": "ankylosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "몸에 갑옷을 두른 듯한 공룡이에요.",
+      "낮게 깔린 자세가 특징이에요.",
+      "포식자에게 쉽게 당하지 않았어요."
+    ],
+    "wikiSearch": "Pinacosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Pinacosaurus"
+  },
+  {
+    "name": "탈라룰루스",
+    "group": "ankylosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "갑옷공룡 무리예요.",
+      "몸을 단단한 판이 지켜 주었어요.",
+      "식물을 먹으며 지냈어요."
+    ],
+    "wikiSearch": "Talarurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Talarurus"
+  },
+  {
+    "name": "렉소비사우루스",
+    "group": "stegosaur",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "등에 판과 가시가 있어요.",
+      "스테고사우루스와 비슷한 친척이에요.",
+      "방어에 유리한 몸이었어요."
+    ],
+    "wikiSearch": "Lexovisaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Lexovisaurus"
+  },
+  {
+    "name": "드라코렉스",
+    "group": "pachycephalosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "머리에 울퉁불퉁한 돌기가 많아요.",
+      "이름이 용처럼 들려요.",
+      "독특한 머리 모양으로 유명해요."
+    ],
+    "wikiSearch": "Dracorex",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Dracorex"
+  },
+  {
+    "name": "스티기몰로크",
+    "group": "pachycephalosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "머리 뒤쪽에 뿔 같은 돌기가 있어요.",
+      "두꺼운 머리뼈 친척으로 알려져요.",
+      "재미있는 머리 모양이 특징이에요."
+    ],
+    "wikiSearch": "Stygimoloch",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Stygimoloch"
+  },
+  {
+    "name": "호마로케팔레",
+    "group": "pachycephalosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "머리 위가 둥글게 두꺼워 보여요.",
+      "몸집이 크지 않아요.",
+      "특이한 머리뼈로 구별돼요."
+    ],
+    "wikiSearch": "Homalocephale",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Homalocephale"
+  },
+  {
+    "name": "무타부라사우루스",
+    "group": "ornithopod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "코 부분이 불룩한 독특한 얼굴이에요.",
+      "중간 크기의 초식 공룡이에요.",
+      "무리 생활을 했을 수 있어요."
+    ],
+    "wikiSearch": "Muttaburrasaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Muttaburrasaurus"
+  },
+  {
+    "name": "이리타토르",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "스피노사우루스 친척이에요.",
+      "주둥이가 길고 물고기 먹기에 유리했어요.",
+      "물가 생활과 관련해 자주 언급돼요."
+    ],
+    "wikiSearch": "Irritator",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Irritator"
+  },
+  {
+    "name": "바리오닉스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "긴 주둥이와 큰 앞발 갈고리를 가졌어요.",
+      "물고기를 잘 잡았을 가능성이 커요.",
+      "스피노사우루스 친척 무리예요."
+    ],
+    "wikiSearch": "Baryonyx",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Baryonyx"
+  },
+  {
+    "name": "수코미무스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "악어처럼 긴 주둥이를 가졌어요.",
+      "물가에서 먹이를 찾았을 것 같아요.",
+      "등 쪽에 낮은 돛 같은 구조가 있어요."
+    ],
+    "wikiSearch": "Suchomimus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Suchomimus"
+  },
+  {
+    "name": "시노르니토사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "작고 깃털이 있었던 랩터 친척이에요.",
+      "빠르고 민첩했어요.",
+      "새와 가까운 특징이 보여요."
+    ],
+    "wikiSearch": "Sinornithosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Sinornithosaurus"
+  },
+  {
+    "name": "미크로랍토르",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "팔과 다리에 깃털이 있었어요.",
+      "나무 사이를 활공했을 가능성이 있어요.",
+      "아주 작은 육식 공룡이에요."
+    ],
+    "wikiSearch": "Microraptor",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Microraptor"
+  },
+  {
+    "name": "앙키오르니스",
+    "group": "birdlike",
+    "diet": "잡식",
+    "period": "쥐라기",
+    "hints": [
+      "깃털이 잘 알려진 작은 공룡이에요.",
+      "새와 닮은 모습이 많아요.",
+      "가벼운 몸으로 움직였어요."
+    ],
+    "wikiSearch": "Anchiornis",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Anchiornis"
+  },
+  {
+    "name": "아르카이옵테릭스",
+    "group": "birdlike",
+    "diet": "잡식",
+    "period": "쥐라기",
+    "hints": [
+      "공룡과 새의 중간 느낌으로 유명해요.",
+      "깃털과 날개가 있었어요.",
+      "아주 중요한 화석으로 알려져요."
+    ],
+    "wikiSearch": "Archaeopteryx",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Archaeopteryx"
+  },
+  {
+    "name": "콘코랍토르",
+    "group": "oviraptorosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "부리 같은 입이 있어요.",
+      "오비랍토르 친척이에요.",
+      "알과 둥지 이야기에 자주 등장해요."
+    ],
+    "wikiSearch": "Conchoraptor",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Conchoraptor"
+  },
+  {
+    "name": "몬오니쿠스",
+    "group": "alvarezsaur",
+    "diet": "곤충식",
+    "period": "백악기",
+    "hints": [
+      "앞발이 짧지만 특별한 손가락이 있어요.",
+      "작고 가벼운 몸집을 가졌어요.",
+      "곤충을 먹었을 가능성이 이야기돼요."
+    ],
+    "wikiSearch": "Mononykus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Mononykus"
+  },
+  {
+    "name": "알바레즈사우루스",
+    "group": "alvarezsaur",
+    "diet": "곤충식",
+    "period": "백악기",
+    "hints": [
+      "몸집이 작고 빠른 공룡이에요.",
+      "앞발 구조가 독특해요.",
+      "곤충을 찾는 데 유리했을지도 몰라요."
+    ],
+    "wikiSearch": "Alvarezsaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Alvarezsaurus"
+  },
+  {
+    "name": "파키리노사우루스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "코에 큰 뿔 대신 두꺼운 혹 같은 구조가 있어요.",
+      "프릴이 넓고 멋져요.",
+      "뿔공룡 친척이에요."
+    ],
+    "wikiSearch": "Pachyrhinosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Pachyrhinosaurus"
+  },
+  {
+    "name": "아켈로우사우루스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "뿔공룡 친척이에요.",
+      "코 쪽 장식이 독특해요.",
+      "큰 프릴이 뒤쪽에 있어요."
+    ],
+    "wikiSearch": "Achelousaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Achelousaurus"
+  },
+  {
+    "name": "에이니오사우루스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "앞쪽 코뿔이 굽은 모습이 특징이에요.",
+      "목 뒤 프릴이 있어요.",
+      "화려한 얼굴 장식이 멋져요."
+    ],
+    "wikiSearch": "Einiosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Einiosaurus"
+  },
+  {
+    "name": "나수토케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "옆으로 휘어진 긴 뿔이 눈에 띄어요.",
+      "귀여운 이름과 멋진 얼굴을 가졌어요.",
+      "큰 프릴도 함께 보여요."
+    ],
+    "wikiSearch": "Nasutoceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Nasutoceratops"
+  },
+  {
+    "name": "디아블로케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "프릴에 튀어나온 뿔이 인상적이에요.",
+      "얼굴 장식이 아주 화려해요.",
+      "뿔공룡 무리에 속해요."
+    ],
+    "wikiSearch": "Diabloceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Diabloceratops"
+  },
+  {
+    "name": "아마르가사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "목 쪽 척추 돌기가 길게 솟아 있어요.",
+      "목 긴 초식 공룡이에요.",
+      "독특한 등과 목 모양으로 유명해요."
+    ],
+    "wikiSearch": "Amargasaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Amargasaurus"
+  },
+  {
+    "name": "니제르사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "입이 넓고 이빨이 많이 있었어요.",
+      "낮은 풀을 먹기 좋았어요.",
+      "목 긴 초식 공룡이지만 얼굴이 독특해요."
+    ],
+    "wikiSearch": "Nigersaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Nigersaurus"
+  },
+  {
+    "name": "마준가사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "날카로운 이빨과 발톱으로 사냥했어요.",
+      "두 발로 빠르게 움직였어요.",
+      "짧은 코뿔과 두꺼운 머리뼈가 특징이에요."
+    ],
+    "wikiSearch": "Majungasaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Majungasaurus"
+  },
+  {
+    "name": "라자사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "날카로운 이빨과 발톱으로 사냥했어요.",
+      "두 발로 빠르게 움직였어요.",
+      "머리 위 볏처럼 솟은 구조가 있었어요."
+    ],
+    "wikiSearch": "Rajasaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Rajasaurus"
+  },
+  {
+    "name": "아우스트랄로베나토르",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "날카로운 이빨과 발톱으로 사냥했어요.",
+      "두 발로 빠르게 움직였어요.",
+      "팔이 비교적 길고 발톱이 날카로웠어요."
+    ],
+    "wikiSearch": "Australovenator",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Australovenator"
+  },
+  {
+    "name": "네오베나토르",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "날카로운 이빨과 발톱으로 사냥했어요.",
+      "두 발로 빠르게 움직였어요.",
+      "유럽에서 발견된 큰 육식 공룡이에요."
+    ],
+    "wikiSearch": "Neovenator",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Neovenator"
+  },
+  {
+    "name": "유티라누스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "날카로운 이빨과 발톱으로 사냥했어요.",
+      "두 발로 빠르게 움직였어요.",
+      "큰 몸집인데도 깃털 흔적이 알려져 있어요."
+    ],
+    "wikiSearch": "Yutyrannus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Yutyrannus"
+  },
+  {
+    "name": "구안롱",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "날카로운 이빨과 발톱으로 사냥했어요.",
+      "두 발로 빠르게 움직였어요.",
+      "머리 위에 큰 볏이 있어 눈에 잘 띄어요."
+    ],
+    "wikiSearch": "Guanlong",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Guanlong"
+  },
+  {
+    "name": "딜롱",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "날카로운 이빨과 발톱으로 사냥했어요.",
+      "두 발로 빠르게 움직였어요.",
+      "작은 몸집의 티라노사우루스 친척이에요."
+    ],
+    "wikiSearch": "Dilong",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Dilong"
+  },
+  {
+    "name": "모노로포사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "날카로운 이빨과 발톱으로 사냥했어요.",
+      "두 발로 빠르게 움직였어요.",
+      "머리 위에 하나의 큰 볏이 있어요."
+    ],
+    "wikiSearch": "Monolophosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Monolophosaurus"
+  },
+  {
+    "name": "양추아노사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "날카로운 이빨과 발톱으로 사냥했어요.",
+      "두 발로 빠르게 움직였어요.",
+      "눈 위와 코 주변의 돌기가 인상적이에요."
+    ],
+    "wikiSearch": "Yangchuanosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Yangchuanosaurus"
+  },
+  {
+    "name": "헤레라사우루스",
+    "group": "theropod",
+    "diet": "육식",
+    "period": "트라이아스기",
+    "hints": [
+      "날카로운 이빨과 발톱으로 사냥했어요.",
+      "두 발로 빠르게 움직였어요.",
+      "아주 초기의 공룡 사냥꾼으로 알려져요."
+    ],
+    "wikiSearch": "Herrerasaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Herrerasaurus"
+  },
+  {
+    "name": "에오랍토르",
+    "group": "early_dinosaur",
+    "diet": "잡식",
+    "period": "트라이아스기",
+    "hints": [
+      "아주 오래전 초창기 공룡이에요.",
+      "몸집은 크지 않았지만 재빨랐어요.",
+      "가장 초기 공룡 가운데 하나로 자주 소개돼요."
+    ],
+    "wikiSearch": "Eoraptor",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Eoraptor"
+  },
+  {
+    "name": "플라테오사우루스",
+    "group": "sauropodomorph",
+    "diet": "초식",
+    "period": "트라이아스기",
+    "hints": [
+      "목과 꼬리가 길어 보이는 친척 무리예요.",
+      "주로 식물을 먹고 살았어요.",
+      "뒷다리로도 잘 서던 초기 목긴공룡 친척이에요."
+    ],
+    "wikiSearch": "Plateosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Plateosaurus"
+  },
+  {
+    "name": "마소스폰딜루스",
+    "group": "sauropodomorph",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "목과 꼬리가 길어 보이는 친척 무리예요.",
+      "주로 식물을 먹고 살았어요.",
+      "긴 목을 가진 초기 초식 공룡으로 유명해요."
+    ],
+    "wikiSearch": "Massospondylus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Massospondylus"
+  },
+  {
+    "name": "오우라노사우루스",
+    "group": "ornithopod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "식물을 먹는 데 알맞은 입을 가졌어요.",
+      "두 발이나 네 발로 움직였을 수 있어요.",
+      "등 위에 돛처럼 솟은 구조가 있어요."
+    ],
+    "wikiSearch": "Ouranosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Ouranosaurus"
+  },
+  {
+    "name": "슈부이아",
+    "group": "alvarezsaur",
+    "diet": "곤충식",
+    "period": "백악기",
+    "hints": [
+      "몸집이 작고 가벼웠어요.",
+      "곤충을 찾는 데 유리한 앞발 구조가 있었어요.",
+      "아주 가는 몸과 특별한 손가락이 특징이에요."
+    ],
+    "wikiSearch": "Shuvuuia",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Shuvuuia"
+  },
+  {
+    "name": "아비미무스",
+    "group": "oviraptorosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "부리 같은 입을 가졌어요.",
+      "둥지와 알 이야기로 자주 언급돼요.",
+      "새처럼 가벼운 몸과 빠른 움직임이 떠올라요."
+    ],
+    "wikiSearch": "Avimimus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Avimimus"
+  },
+  {
+    "name": "시티파티",
+    "group": "oviraptorosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "부리 같은 입을 가졌어요.",
+      "둥지와 알 이야기로 자주 언급돼요.",
+      "둥지를 지키는 자세의 화석으로 유명해요."
+    ],
+    "wikiSearch": "Citipati",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Citipati"
+  },
+  {
+    "name": "칸",
+    "group": "oviraptorosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "부리 같은 입을 가졌어요.",
+      "둥지와 알 이야기로 자주 언급돼요.",
+      "몸집은 작지만 부리 모양 얼굴이 또렷해요."
+    ],
+    "wikiSearch": "Khaan",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Khaan"
+  },
+  {
+    "name": "그리포사우루스",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "오리주둥이 같은 넓은 입을 가졌어요.",
+      "무리 지어 살았을 가능성이 있어요.",
+      "코 부분이 높게 솟아 독특한 얼굴을 보여요."
+    ],
+    "wikiSearch": "Gryposaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Gryposaurus"
+  },
+  {
+    "name": "히파크로사우루스",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "오리주둥이 같은 넓은 입을 가졌어요.",
+      "무리 지어 살았을 가능성이 있어요.",
+      "큰 볏을 가진 오리주둥이 공룡 친척이에요."
+    ],
+    "wikiSearch": "Hypacrosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Hypacrosaurus"
+  },
+  {
+    "name": "칭다오사우루스",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "오리주둥이 같은 넓은 입을 가졌어요.",
+      "무리 지어 살았을 가능성이 있어요.",
+      "머리 위로 길게 솟은 볏이 아주 독특해요."
+    ],
+    "wikiSearch": "Tsintaosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Tsintaosaurus"
+  },
+  {
+    "name": "올로로티탄",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "오리주둥이 같은 넓은 입을 가졌어요.",
+      "무리 지어 살았을 가능성이 있어요.",
+      "백조처럼 긴 목과 큰 볏으로 유명해요."
+    ],
+    "wikiSearch": "Olorotitan",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Olorotitan"
+  },
+  {
+    "name": "크리토사우루스",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "오리주둥이 같은 넓은 입을 가졌어요.",
+      "무리 지어 살았을 가능성이 있어요.",
+      "코 주변이 불룩한 오리주둥이 공룡이에요."
+    ],
+    "wikiSearch": "Kritosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Kritosaurus"
+  },
+  {
+    "name": "마그나파울리아",
+    "group": "hadrosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "오리주둥이 같은 넓은 입을 가졌어요.",
+      "무리 지어 살았을 가능성이 있어요.",
+      "아주 큰 오리주둥이 공룡 가운데 하나예요."
+    ],
+    "wikiSearch": "Magnapaulia",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Magnapaulia"
+  },
+  {
+    "name": "주니케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "얼굴 장식이나 프릴이 있는 친척 무리예요.",
+      "풀을 먹고 살았어요.",
+      "뿔공룡 진화의 초기를 보여 주는 공룡이에요."
+    ],
+    "wikiSearch": "Zuniceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Zuniceratops"
+  },
+  {
+    "name": "렙토케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "얼굴 장식이나 프릴이 있는 친척 무리예요.",
+      "풀을 먹고 살았어요.",
+      "몸집이 작은 뿔공룡 친척이에요."
+    ],
+    "wikiSearch": "Leptoceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Leptoceratops"
+  },
+  {
+    "name": "메두사케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "얼굴 장식이나 프릴이 있는 친척 무리예요.",
+      "풀을 먹고 살았어요.",
+      "프릴 주변 장식이 화려하게 퍼져 보여요."
+    ],
+    "wikiSearch": "Medusaceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Medusaceratops"
+  },
+  {
+    "name": "웬디케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "얼굴 장식이나 프릴이 있는 친척 무리예요.",
+      "풀을 먹고 살았어요.",
+      "코뿔과 프릴 장식이 멋진 공룡이에요."
+    ],
+    "wikiSearch": "Wendiceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Wendiceratops"
+  },
+  {
+    "name": "알베르타케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "얼굴 장식이나 프릴이 있는 친척 무리예요.",
+      "풀을 먹고 살았어요.",
+      "길게 뻗은 눈 위 뿔이 특징이에요."
+    ],
+    "wikiSearch": "Albertaceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Albertaceratops"
+  },
+  {
+    "name": "아구하케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "얼굴 장식이나 프릴이 있는 친척 무리예요.",
+      "풀을 먹고 살았어요.",
+      "큰 프릴과 뿔이 얼굴을 화려하게 꾸며요."
+    ],
+    "wikiSearch": "Agujaceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Agujaceratops"
+  },
+  {
+    "name": "리갈리케라톱스",
+    "group": "ceratopsian",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "얼굴 장식이나 프릴이 있는 친척 무리예요.",
+      "풀을 먹고 살았어요.",
+      "왕관처럼 보이는 얼굴 장식으로 유명해요."
+    ],
+    "wikiSearch": "Regaliceratops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Regaliceratops"
+  },
+  {
+    "name": "보레알로펠타",
+    "group": "ankylosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "몸을 단단한 갑옷이 지켜 주었어요.",
+      "낮은 자세로 식물을 먹었어요.",
+      "갑옷과 가시가 아주 잘 보존된 화석으로 유명해요."
+    ],
+    "wikiSearch": "Borealopelta",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Borealopelta"
+  },
+  {
+    "name": "가고일레오사우루스",
+    "group": "ankylosaur",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "몸을 단단한 갑옷이 지켜 주었어요.",
+      "낮은 자세로 식물을 먹었어요.",
+      "등과 꼬리의 갑옷이 단단해 보여요."
+    ],
+    "wikiSearch": "Gargoyleosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Gargoyleosaurus"
+  },
+  {
+    "name": "퉈장고사우루스",
+    "group": "stegosaur",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "등이나 꼬리에 판 또는 가시가 있었어요.",
+      "식물을 먹고 살았어요.",
+      "등의 판과 꼬리 가시가 뚜렷해요."
+    ],
+    "wikiSearch": "Tuojiangosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Tuojiangosaurus"
+  },
+  {
+    "name": "우에르호사우루스",
+    "group": "stegosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "등이나 꼬리에 판 또는 가시가 있었어요.",
+      "식물을 먹고 살았어요.",
+      "낮고 넓은 판을 가진 스테고사우루스 친척이에요."
+    ],
+    "wikiSearch": "Wuerhosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Wuerhosaurus"
+  },
+  {
+    "name": "헝가로사우루스",
+    "group": "ankylosaur",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "몸을 단단한 갑옷이 지켜 주었어요.",
+      "낮은 자세로 식물을 먹었어요.",
+      "몸 전체를 덮는 갑옷이 인상적이에요."
+    ],
+    "wikiSearch": "Hungarosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Hungarosaurus"
+  },
+  {
+    "name": "드레드노투스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "백악기",
+    "hints": [
+      "목과 꼬리가 긴 거대한 초식 공룡이에요.",
+      "높은 곳이나 넓은 범위의 식물을 먹었어요.",
+      "엄청난 몸집으로 이름처럼 거대해 보여요."
+    ],
+    "wikiSearch": "Dreadnoughtus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Dreadnoughtus"
+  },
+  {
+    "name": "유로파사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "목과 꼬리가 긴 거대한 초식 공룡이에요.",
+      "높은 곳이나 넓은 범위의 식물을 먹었어요.",
+      "섬 환경에 적응해 비교적 작은 몸집을 가졌어요."
+    ],
+    "wikiSearch": "Europasaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Europasaurus"
+  },
+  {
+    "name": "지라파티탄",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "목과 꼬리가 긴 거대한 초식 공룡이에요.",
+      "높은 곳이나 넓은 범위의 식물을 먹었어요.",
+      "기린처럼 앞쪽이 높아 보이는 몸을 가졌어요."
+    ],
+    "wikiSearch": "Giraffatitan",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Giraffatitan"
+  },
+  {
+    "name": "바라파사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "목과 꼬리가 긴 거대한 초식 공룡이에요.",
+      "높은 곳이나 넓은 범위의 식물을 먹었어요.",
+      "초기의 거대한 목긴공룡 가운데 하나예요."
+    ],
+    "wikiSearch": "Barapasaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Barapasaurus"
+  },
+  {
+    "name": "오메이사우루스",
+    "group": "sauropod",
+    "diet": "초식",
+    "period": "쥐라기",
+    "hints": [
+      "목과 꼬리가 긴 거대한 초식 공룡이에요.",
+      "높은 곳이나 넓은 범위의 식물을 먹었어요.",
+      "아주 긴 목으로 높은 식물을 먹었어요."
+    ],
+    "wikiSearch": "Omeisaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Omeisaurus"
+  },
+  {
+    "name": "프테라노돈",
+    "group": "pterosaur",
+    "diet": "어식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "머리 뒤로 길게 뻗은 볏이 유명해요."
+    ],
+    "wikiSearch": "Pteranodon",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Pteranodon"
+  },
+  {
+    "name": "프테로닥틸루스",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "아주 유명한 익룡 이름으로 자주 등장해요."
+    ],
+    "wikiSearch": "Pterodactylus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Pterodactylus"
+  },
+  {
+    "name": "케찰코아틀루스",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "하늘을 난 동물 가운데 아주 거대한 편이에요."
+    ],
+    "wikiSearch": "Quetzalcoatlus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Quetzalcoatlus"
+  },
+  {
+    "name": "디모르포돈",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "큰 머리와 긴 꼬리가 눈에 띄어요."
+    ],
+    "wikiSearch": "Dimorphodon",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Dimorphodon"
+  },
+  {
+    "name": "람포링쿠스",
+    "group": "pterosaur",
+    "diet": "어식",
+    "period": "쥐라기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "긴 꼬리 끝에 마름모 모양 구조가 있었어요."
+    ],
+    "wikiSearch": "Rhamphorhynchus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Rhamphorhynchus"
+  },
+  {
+    "name": "안항구에라",
+    "group": "pterosaur",
+    "diet": "어식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "긴 부리와 물고기 잡기에 좋은 이빨이 있었어요."
+    ],
+    "wikiSearch": "Anhanguera",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Anhanguera"
+  },
+  {
+    "name": "트로페오그나투스",
+    "group": "pterosaur",
+    "diet": "어식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "부리 끝 볏이 커서 하늘에서 눈에 띄었어요."
+    ],
+    "wikiSearch": "Tropeognathus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Tropeognathus"
+  },
+  {
+    "name": "타페자라",
+    "group": "pterosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "머리 위 큰 볏이 마치 돛처럼 보여요."
+    ],
+    "wikiSearch": "Tapejara",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Tapejara"
+  },
+  {
+    "name": "투판닥틸루스",
+    "group": "pterosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "머리 볏이 매우 크고 화려해요."
+    ],
+    "wikiSearch": "Tupandactylus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Tupandactylus"
+  },
+  {
+    "name": "니크토사우루스",
+    "group": "pterosaur",
+    "diet": "어식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "뿔처럼 갈라진 큰 머리 볏으로 유명해요."
+    ],
+    "wikiSearch": "Nyctosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Nyctosaurus"
+  },
+  {
+    "name": "오르니토케이루스",
+    "group": "pterosaur",
+    "diet": "어식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "긴 날개와 긴 부리로 바다 위를 날았을 것 같아요."
+    ],
+    "wikiSearch": "Ornithocheirus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Ornithocheirus"
+  },
+  {
+    "name": "콜로보린쿠스",
+    "group": "pterosaur",
+    "diet": "어식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "부리 끝이 넓고 독특해 보여요."
+    ],
+    "wikiSearch": "Coloborhynchus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Coloborhynchus"
+  },
+  {
+    "name": "이스티오닥틸루스",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "넓은 부리와 삼각형 이빨이 특징이에요."
+    ],
+    "wikiSearch": "Istiodactylus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Istiodactylus"
+  },
+  {
+    "name": "투폭수아라",
+    "group": "pterosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "머리 뒤쪽 볏이 길게 뻗어 있어요."
+    ],
+    "wikiSearch": "Tupuxuara",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Tupuxuara"
+  },
+  {
+    "name": "다르위놉테루스",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "짧은 꼬리와 긴 부리를 함께 가진 중간형 익룡으로 유명해요."
+    ],
+    "wikiSearch": "Darwinopterus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Darwinopterus"
+  },
+  {
+    "name": "우쿵곱테루스",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "긴 꼬리와 큰 머리를 가진 익룡이에요."
+    ],
+    "wikiSearch": "Wukongopterus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Wukongopterus"
+  },
+  {
+    "name": "프테로다우스트로",
+    "group": "pterosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "아주 많은 가느다란 이빨로 먹이를 걸러 먹었어요."
+    ],
+    "wikiSearch": "Pterodaustro",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Pterodaustro"
+  },
+  {
+    "name": "탈라소드로메우스",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "머리 위 거대한 볏이 돛처럼 보여요."
+    ],
+    "wikiSearch": "Thalassodromeus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Thalassodromeus"
+  },
+  {
+    "name": "저장곱테루스",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "목이 길고 큰 몸을 가진 아즈다르크 익룡이에요."
+    ],
+    "wikiSearch": "Zhejiangopterus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Zhejiangopterus"
+  },
+  {
+    "name": "하체곱테릭스",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "아주 큰 머리와 강한 턱을 가졌을 것으로 생각돼요."
+    ],
+    "wikiSearch": "Hatzegopteryx",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Hatzegopteryx"
+  },
+  {
+    "name": "귀드라코",
+    "group": "pterosaur",
+    "diet": "어식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "부리에 이빨이 촘촘히 나 있어요."
+    ],
+    "wikiSearch": "Guidraco",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Guidraco"
+  },
+  {
+    "name": "제아라닥틸루스",
+    "group": "pterosaur",
+    "diet": "어식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "길고 강한 부리로 물고기를 잡았을 것 같아요."
+    ],
+    "wikiSearch": "Cearadactylus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Cearadactylus"
+  },
+  {
+    "name": "중가리프테루스",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "두꺼운 부리 끝으로 딱딱한 먹이를 다뤘을지도 몰라요."
+    ],
+    "wikiSearch": "Dsungaripterus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Dsungaripterus"
+  },
+  {
+    "name": "카이우아자라",
+    "group": "pterosaur",
+    "diet": "잡식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "무리 생활을 했을 가능성이 이야기돼요."
+    ],
+    "wikiSearch": "Caiuajara",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Caiuajara"
+  },
+  {
+    "name": "루도닥틸루스",
+    "group": "pterosaur",
+    "diet": "어식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "프테라노돈처럼 볏이 있지만 이빨도 있었어요."
+    ],
+    "wikiSearch": "Ludodactylus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Ludodactylus"
+  },
+  {
+    "name": "알랑카",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "긴 목과 부리를 가진 큰 익룡이에요."
+    ],
+    "wikiSearch": "Alanqa",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Alanqa"
+  },
+  {
+    "name": "에어로티탄",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "거대한 아즈다르크 익룡 친척이에요."
+    ],
+    "wikiSearch": "Aerotitan",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Aerotitan"
+  },
+  {
+    "name": "캄필로그나토이데스",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "초기의 긴꼬리 익룡으로 알려져요."
+    ],
+    "wikiSearch": "Campylognathoides",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Campylognathoides"
+  },
+  {
+    "name": "스카포그나투스",
+    "group": "pterosaur",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "짧은 머리와 긴 꼬리가 함께 보여요."
+    ],
+    "wikiSearch": "Scaphognathus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Scaphognathus"
+  },
+  {
+    "name": "그나토사우루스",
+    "group": "pterosaur",
+    "diet": "어식",
+    "period": "쥐라기",
+    "hints": [
+      "하늘을 날던 파충류예요.",
+      "긴 날개와 가벼운 몸을 가졌어요.",
+      "부리 끝이 넓게 퍼져 먹이를 찾기 좋았어요."
+    ],
+    "wikiSearch": "Gnathosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Gnathosaurus"
+  },
+  {
+    "name": "모사사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "길고 강한 몸으로 바다의 포식자로 유명해요."
+    ],
+    "wikiSearch": "Mosasaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Mosasaurus"
+  },
+  {
+    "name": "타일로사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "길쭉한 몸과 강한 턱을 가진 바다 포식자예요."
+    ],
+    "wikiSearch": "Tylosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Tylosaurus"
+  },
+  {
+    "name": "플라테카르푸스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "모사사우루스 친척 가운데 빠르게 헤엄쳤을 것 같아요."
+    ],
+    "wikiSearch": "Platecarpus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Platecarpus"
+  },
+  {
+    "name": "프로그나토돈",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "굵고 강한 이빨이 아주 인상적이에요."
+    ],
+    "wikiSearch": "Prognathodon",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Prognathodon"
+  },
+  {
+    "name": "클리다스테스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "가늘고 긴 몸으로 민첩하게 헤엄쳤을 거예요."
+    ],
+    "wikiSearch": "Clidastes",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Clidastes"
+  },
+  {
+    "name": "플리오플라테카르푸스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "모사사우루스 친척 무리의 날씬한 사냥꾼이에요."
+    ],
+    "wikiSearch": "Plioplatecarpus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Plioplatecarpus"
+  },
+  {
+    "name": "엘라스모사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "목이 아주 길어 유명한 바다 파충류예요."
+    ],
+    "wikiSearch": "Elasmosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Elasmosaurus"
+  },
+  {
+    "name": "플레시오사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "긴 목과 네 개의 지느러미발이 특징이에요."
+    ],
+    "wikiSearch": "Plesiosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Plesiosaurus"
+  },
+  {
+    "name": "크립토클리두스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "긴 목으로 작은 먹이를 노렸을지도 몰라요."
+    ],
+    "wikiSearch": "Cryptoclidus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Cryptoclidus"
+  },
+  {
+    "name": "스틱소사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "아주 긴 목을 가진 플레시오사우루스 친척이에요."
+    ],
+    "wikiSearch": "Styxosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Styxosaurus"
+  },
+  {
+    "name": "알버토넥테스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "목뼈 수가 많아 매우 긴 목을 가졌어요."
+    ],
+    "wikiSearch": "Albertonectes",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Albertonectes"
+  },
+  {
+    "name": "돌리코린콥스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "목은 짧지만 빠르게 헤엄쳤을 것 같아요."
+    ],
+    "wikiSearch": "Dolichorhynchops",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Dolichorhynchops"
+  },
+  {
+    "name": "폴리코틸루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "짧은 목과 큰 지느러미발이 특징이에요."
+    ],
+    "wikiSearch": "Polycotylus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Polycotylus"
+  },
+  {
+    "name": "크로노사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "백악기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "머리가 크고 무는 힘이 강했을 것으로 유명해요."
+    ],
+    "wikiSearch": "Kronosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Kronosaurus"
+  },
+  {
+    "name": "리오플레우로돈",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "거대한 바다 포식자로 자주 소개돼요."
+    ],
+    "wikiSearch": "Liopleurodon",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Liopleurodon"
+  },
+  {
+    "name": "플리오사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "짧은 목과 큰 머리를 가진 포식자예요."
+    ],
+    "wikiSearch": "Pliosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Pliosaurus"
+  },
+  {
+    "name": "로말레오사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "초기의 큰 플리오사우루스형 바다 파충류예요."
+    ],
+    "wikiSearch": "Rhomaleosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Rhomaleosaurus"
+  },
+  {
+    "name": "이크티오사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "돌고래처럼 생긴 몸으로 헤엄쳤어요."
+    ],
+    "wikiSearch": "Ichthyosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Ichthyosaurus"
+  },
+  {
+    "name": "오프탈모사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "눈이 매우 커서 깊은 바다를 잘 봤을지도 몰라요."
+    ],
+    "wikiSearch": "Ophthalmosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Ophthalmosaurus"
+  },
+  {
+    "name": "템노돈토사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "긴 몸과 큰 눈을 가진 이크티오사우루스예요."
+    ],
+    "wikiSearch": "Temnodontosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Temnodontosaurus"
+  },
+  {
+    "name": "쇼니사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "트라이아스기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "아주 거대한 몸집의 이크티오사우루스예요."
+    ],
+    "wikiSearch": "Shonisaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Shonisaurus"
+  },
+  {
+    "name": "믹소사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "트라이아스기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "초기의 이크티오사우루스 친척으로 알려져요."
+    ],
+    "wikiSearch": "Mixosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Mixosaurus"
+  },
+  {
+    "name": "심보스폰딜루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "트라이아스기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "매우 오래전 바다에서 살던 큰 파충류예요."
+    ],
+    "wikiSearch": "Cymbospondylus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Cymbospondylus"
+  },
+  {
+    "name": "엑스칼리보사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "윗턱이 길게 뻗어 칼처럼 보여요."
+    ],
+    "wikiSearch": "Excalibosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Excalibosaurus"
+  },
+  {
+    "name": "다코사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "악어 같은 얼굴로 바다에서 사냥했어요."
+    ],
+    "wikiSearch": "Dakosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Dakosaurus"
+  },
+  {
+    "name": "메트리오린쿠스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "바다 생활에 적응한 악어형 파충류예요."
+    ],
+    "wikiSearch": "Metriorhynchus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Metriorhynchus"
+  },
+  {
+    "name": "게오사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "쥐라기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "날씬한 몸으로 바다를 빠르게 헤엄쳤어요."
+    ],
+    "wikiSearch": "Geosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Geosaurus"
+  },
+  {
+    "name": "노토사우루스",
+    "group": "marine_reptile",
+    "diet": "육식",
+    "period": "트라이아스기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "물가와 바다를 오가며 살았을 것으로 알려져요."
+    ],
+    "wikiSearch": "Nothosaurus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Nothosaurus"
+  },
+  {
+    "name": "아토포덴타투스",
+    "group": "marine_reptile",
+    "diet": "잡식",
+    "period": "트라이아스기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "이상하게 넓은 입으로 먹이를 긁어 먹었을지도 몰라요."
+    ],
+    "wikiSearch": "Atopodentatus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Atopodentatus"
+  },
+  {
+    "name": "플라코두스",
+    "group": "marine_reptile",
+    "diet": "잡식",
+    "period": "트라이아스기",
+    "hints": [
+      "바다에서 헤엄치며 살았어요.",
+      "물고기나 다른 바다동물을 잡아먹었어요.",
+      "납작한 이빨로 딱딱한 조개류를 먹었을 것 같아요."
+    ],
+    "wikiSearch": "Placodus",
+    "wikiPageUrl": "https://en.m.wikipedia.org/wiki/Placodus"
+  }
+];
+
+let deck = [...dinosaurs];
+let currentIndex = 0;
+
+const cardContainer = document.getElementById('cardContainer');
+const hintList = document.getElementById('hintList');
+const dinoName = document.getElementById('dinoName');
+const dinoDiet = document.getElementById('dinoDiet');
+const dinoPeriod = document.getElementById('dinoPeriod');
+const dinoImage = document.getElementById('dinoImage');
+const dinoImageBg = document.getElementById('dinoImageBg');
+const countBadge = document.getElementById('countBadge');
+const sourceLink = document.getElementById('sourceLink');
+const overlayText = document.getElementById('overlayText');
+
+function fallbackSvg(label) {
+  return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520">' +
+    '<rect width="100%" height="100%" fill="#eefaf5"/>' +
+    '<ellipse cx="400" cy="450" rx="260" ry="36" fill="#d8eadf"/>' +
+    '<ellipse cx="320" cy="285" rx="182" ry="98" fill="#69c36f"/>' +
+    '<ellipse cx="500" cy="235" rx="84" ry="62" fill="#69c36f"/>' +
+    '<circle cx="525" cy="222" r="7" fill="#222"/>' +
+    '<path d="M548 242 Q590 248 620 266" fill="none" stroke="#4b9e56" stroke-width="10" stroke-linecap="round"/>' +
+    '<path d="M145 270 Q60 240 20 190 Q35 255 98 292" fill="none" stroke="#69c36f" stroke-width="32" stroke-linecap="round"/>' +
+    '<path d="M250 340 L225 432" stroke="#4b9e56" stroke-width="28" stroke-linecap="round"/>' +
+    '<path d="M338 342 L323 432" stroke="#4b9e56" stroke-width="28" stroke-linecap="round"/>' +
+    '<path d="M445 258 L425 300" stroke="#4b9e56" stroke-width="18" stroke-linecap="round"/>' +
+    '<path d="M465 265 L445 305" stroke="#4b9e56" stroke-width="18" stroke-linecap="round"/>' +
+    '<text x="400" y="72" text-anchor="middle" font-size="36" font-family="sans-serif" fill="#2f7f62" font-weight="700">' + label + '</text>' +
+    '<text x="400" y="112" text-anchor="middle" font-size="20" font-family="sans-serif" fill="#56717c" font-weight="600">등록된 사진이 없어 임시 그림을 표시합니다.</text>' +
+    '</svg>'
+  );
+}
+
+function setImageSources(src, altText) {
+  dinoImage.src = src;
+  dinoImage.alt = altText;
+  dinoImageBg.src = src;
+}
+
+function preloadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(src);
+    img.onerror = () => reject(new Error("load failed"));
+    img.src = src;
+  });
+}
+
+function getLocalImageCandidates(d) {
+  const base = d.wikiSearch || '';
+  const lower = base.toLowerCase();
+  return [
+    `images/${base}.jpg`, `images/${base}.jpeg`, `images/${base}.png`, `images/${base}.webp`,
+    `images/${lower}.jpg`, `images/${lower}.jpeg`, `images/${lower}.png`, `images/${lower}.webp`
+  ];
+}
+
+async function tryLoadLocalReconImage(d) {
+  const candidates = getLocalImageCandidates(d);
+  for (const src of candidates) {
+    try {
+      await preloadImage(src);
+      return src;
+    } catch (e) {}
+  }
+  return null;
+}
+
+// ✨ 1. 스미소니언 Open Access API (가장 안전한 CC0 우선)
+async function getSmithsonianImage(dinoName) {
+  try {
+    const response = await fetch(`https://api.si.edu/openaccess/api/v1.0/search?q=${dinoName}&api_key=DEMO_KEY`);
+    const data = await response.json();
+
+    if (data.response && data.response.rows && data.response.rows.length > 0) {
+      for (const item of data.response.rows) {
+        if (item.content && item.content.descriptiveNonRepeating && item.content.descriptiveNonRepeating.online_media) {
+          const media = item.content.descriptiveNonRepeating.online_media.media;
+          if (media && media.length > 0 && media[0].content) {
+            return media[0].content; 
+          }
+        }
+      }
+    }
+  } catch (e) {
+    return null;
+  }
+  return null;
+}
+
+// ✨ 2. 위키미디어 공용 API (Paleoart 우선 검색 및 라이선스 정보 추출)
+async function getWikimediaCommonsImage(dinoName) {
+  try {
+    // 복원도(paleoart) 키워드를 포함해 고퀄리티 이미지를 먼저 찾습니다.
+    let res = await fetch(`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${dinoName} paleoart&prop=imageinfo&iiprop=url|extmetadata&format=json&origin=*`);
+    let data = await res.json();
+
+    // 복원도가 없으면 해당 공룡 이름으로 일반 검색 (화석/골격 등)
+    if (!data.query || !data.query.pages) {
+      res = await fetch(`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${dinoName}&prop=imageinfo&iiprop=url|extmetadata&format=json&origin=*`);
+      data = await res.json();
+    }
+
+    if (data.query && data.query.pages) {
+      const pages = Object.values(data.query.pages);
+      if (pages.length > 0 && pages[0].imageinfo) {
+        const imgInfo = pages[0].imageinfo[0];
+        // 라이선스 정보가 있으면 가져오고, 없으면 기본 텍스트 표시
+        const license = imgInfo.extmetadata && imgInfo.extmetadata.LicenseShortName ? imgInfo.extmetadata.LicenseShortName.value : '자유 라이선스';
+        return { url: imgInfo.url, license: license };
+      }
+    }
+  } catch (e) {
+    return null;
+  }
+  return null;
+}
+
+async function updateCard() {
+  cardContainer.classList.remove('flipped');
+
+  setTimeout(async () => {
+    const d = deck[currentIndex];
+
+    hintList.innerHTML = d.hints.map((h, i) => `<div class="hint">${i + 1}. ${h}</div>`).join('');
+    dinoName.textContent = d.name;
+    dinoDiet.textContent = d.diet;
+    dinoPeriod.textContent = d.period;
+    countBadge.textContent = `${currentIndex + 1} / ${deck.length}`;
+    overlayText.textContent = "안전한 교육용 이미지를 찾는 중...";
+
+    dinoImage.onerror = () => {
+      dinoImage.onerror = null;
+      setImageSources(fallbackSvg(d.name), d.name + " 대체 그림");
+      overlayText.textContent = "이미지를 불러오지 못해 대체 그림을 표시합니다.";
+      sourceLink.innerHTML = "";
+    };
+
+    dinoImageBg.onerror = () => {
+      dinoImageBg.onerror = null;
+      dinoImageBg.src = '';
+    };
+
+    // [1순위] 로컬 저장소: 직접 검수한 최상급 이미지가 있다면 무조건 최우선!
+    const localRecon = await tryLoadLocalReconImage(d);
+    if (localRecon) {
+      setImageSources(localRecon, d.name + " 복원 실사 이미지");
+      overlayText.textContent = "저장소의 복원 실사 이미지를 표시합니다.";
+      sourceLink.innerHTML = `<span style="color:#2f7f62;">로컬 파일: ${localRecon}</span>`;
+      return;
+    }
+
+    // [2순위] 스미소니언 Open Access (안전하고 교육적인 CC0 박물관 자료)
+    const smithsonianImgUrl = await getSmithsonianImage(d.wikiSearch);
+    if (smithsonianImgUrl) {
+      setImageSources(smithsonianImgUrl, d.name + " 스미소니언 박물관 이미지");
+      overlayText.textContent = "스미소니언 박물관의 공식 공개 자료(CC0)입니다.";
+      sourceLink.innerHTML = `<a href="https://www.si.edu/openaccess" target="_blank" rel="noopener noreferrer">출처: Smithsonian Open Access</a>`;
+      return;
+    }
+
+    // [3순위] 위키미디어 공용 (Paleoart 복원도 및 화석 사진)
+    const commonsData = await getWikimediaCommonsImage(d.wikiSearch);
+    if (commonsData && commonsData.url) {
+      setImageSources(commonsData.url, d.name + " 위키미디어 공용 이미지");
+      overlayText.textContent = "위키미디어 공용의 과학 기반 복원도/화석입니다.";
+      sourceLink.innerHTML = `<a href="https://commons.wikimedia.org/w/index.php?search=${d.wikiSearch}" target="_blank" rel="noopener noreferrer">출처: Wikimedia Commons (${commonsData.license})</a>`;
+      return;
+    }
+
+    // [4순위] 최후의 보루: 일반 위키백과
+    try {
+      const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${d.wikiSearch}`);
+      const data = await response.json();
+
+      if (data.thumbnail && data.thumbnail.source) {
+        const highResUrl = data.thumbnail.source.replace(/\/\d+px-/, '/600px-');
+        setImageSources(highResUrl, d.name + " 실제 이미지");
+        overlayText.textContent = "위키백과의 공룡 이미지를 표시합니다.";
+        sourceLink.innerHTML = `<a href="${d.wikiPageUrl}" target="_blank" rel="noopener noreferrer">위키백과 원문 보기</a>`;
+      } else {
+        throw new Error("이미지 없음");
+      }
+    } catch (error) {
+      setImageSources(fallbackSvg(d.name), d.name + " 대체 그림");
+      overlayText.textContent = "등록된 이미지가 없어 대체 그림을 표시합니다.";
+      sourceLink.innerHTML = "";
+    }
+  }, 180);
+}
+
+function flipCard() {
+  cardContainer.classList.toggle('flipped');
+}
+
+function nextCard(e) {
+  if (e) e.stopPropagation();
+  currentIndex = (currentIndex + 1) % deck.length;
+  updateCard();
+}
+
+function prevCard(e) {
+  if (e) e.stopPropagation();
+  currentIndex = (currentIndex - 1 + deck.length) % deck.length;
+  updateCard();
+}
+
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function shuffleDeck(e) {
+  if (e) e.stopPropagation();
+  deck = [...dinosaurs];
+  shuffleArray(deck);
+  currentIndex = 0;
+  updateCard();
+}
+
+function goFirst(e) {
+  if (e) e.stopPropagation();
+  deck = [...dinosaurs];
+  currentIndex = 0;
+  updateCard();
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft') prevCard();
+  if (e.key === ' ' || e.key === 'Enter') {
+    e.preventDefault();
+    flipCard();
+  }
+});
+
+updateCard();
+</script>
+</body>
+</html>
