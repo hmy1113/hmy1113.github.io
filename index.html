@@ -83,7 +83,12 @@ h1 { margin:8px 0 6px; font-size:clamp(28px, 6vw, 34px); color:#207b3b; }
   position:relative;
 }
 .image-wrap img {
-  width:100%; height:100%; object-fit:cover; display:block; background:#f3fbff;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  background:#f3fbff;
+  padding:8px;
 }
 .overlay {
   position:absolute; left:12px; right:12px; bottom:12px; background:rgba(255,255,255,.88);
